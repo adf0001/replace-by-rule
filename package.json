@@ -7,7 +7,7 @@
     "test": "mocha"
   },
   "bin": {
-    "replace-by-rule": "./bin/cmd.js"
+    "replace-by-rule": "bin/cmd.js"
   },
   "keywords": [
     "text",
