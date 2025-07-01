@@ -1,0 +1,12 @@
+#1
+a
+b
+#2 @all
+a
+b
+#3 @reg
+a
+b
+#4 @reg(flags=i)
+a
+b

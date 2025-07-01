@@ -1,0 +1,27 @@
+{
+  "name": "replace-by-rule",
+  "version": "0.0.2",
+  "description": "replace text by rule",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "bin": {
+    "replace-by-rule": "./bin/cmd.js"
+  },
+  "keywords": [
+    "text",
+    "replace",
+    "rule"
+  ],
+  "author": "fwg",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adf0001/replace-by-rule.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adf0001/replace-by-rule/issues"
+  },
+  "homepage": "https://github.com/adf0001/replace-by-rule#readme"
+}
