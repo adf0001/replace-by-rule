@@ -3,6 +3,8 @@ const fs = require("fs");
 
 const { ruleFromFile, replaceByRule } = require("./index");
 
+const { version, description } = require("./package.json");
+
 let inputFile = null;
 let outputFile = null;
 let ruleFile = null;
@@ -36,28 +38,43 @@ for (let i = 0; i < process.argv.length; i++) {
   }
 }
 
-const help = `
-Usage: replace-by-rule -i <input-file>  -r <rule-file> [ -o <output-file> ] [ --mode <mode> ]
+const help = `replace-by-rule v${version}
+
+${description}
+
+Usage: replace-by-rule [ -i <input-file> ] -r <rule-file> [ -o <output-file> ] [ --mode <mode> ]
 
 Options:
-  -i <input-file>               Input file
-  -r <rule-file>                Rule file
-  -o <output-file>              Optional, output file (default: stdout)
-  --mode <auto|text|json|js>    Optional, default: auto
-  --verbose <0|1|2>             Optional, 0: silent, 1: default, 2: verbose
+  -i <input-file>               Input file; if not specified, read from pipe/redirection.
+  -r <rule-file>                Rule file.
+  -o <output-file>              Optional, output file (default: stdout).
+  --mode <auto|text|json|js>    Optional, default: auto.
+  --verbose <0|1|2>             Optional, 0: silent, 1: default, 2: verbose.
 `;
 
-if (!inputFile || !ruleFile) {
+// rule file is required
+if (!ruleFile) {
   console.log(help);
   process.exit(0);
 }
 
-// load input file
-inputFile = path.resolve(inputFile);
-if (verbose > 0) {
-  console.log(`Loading input file: ${inputFile}`);
+// input file
+let inputText = null;
+
+if (inputFile) {
+  // load input file
+  inputFile = path.resolve(inputFile);
+  if (verbose > 0) {
+    console.log(`Loading input file: ${inputFile}`);
+  }
+  inputText = fs.readFileSync(inputFile, "utf8");
+} else if (!process.stdin.isTTY) {
+  // read input from pipe/redirection
+  inputText = fs.readFileSync(0, "utf8");
+} else {
+  console.log(help);
+  process.exit(0);
 }
-let inputText = fs.readFileSync(inputFile, "utf8");
 
 // load rule file
 ruleFile = path.resolve(ruleFile);
@@ -80,5 +97,6 @@ if (outputFile) {
   }
   fs.writeFileSync(outputFile, outputText, "utf8");
 } else {
-  console.log(outputText);
+  // console.log(outputText);
+  process.stdout.write(outputText);
 }

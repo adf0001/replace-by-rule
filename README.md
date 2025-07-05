@@ -6,14 +6,18 @@ npm i -g replace-by-rule
 
 # CLI tool
 ```text
-Usage: replace-by-rule -i <input-file>  -r <rule-file> [ -o <output-file> ] [ --mode <mode> ]
+replace-by-rule v0.0.4
+
+replace text by rule
+
+Usage: replace-by-rule [ -i <input-file> ] -r <rule-file> [ -o <output-file> ] [ --mode <mode> ]
 
 Options:
-  -i <input-file>               Input file
-  -r <rule-file>                Rule file
-  -o <output-file>              Optional, output file (default: stdout)
-  --mode <auto|text|json|js>    Optional, default: auto
-  --verbose <0|1|2>             Optional, 0: silent, 1: default, 2: verbose
+  -i <input-file>               Input file; if not specified, read from pipe/redirection.
+  -r <rule-file>                Rule file.
+  -o <output-file>              Optional, output file (default: stdout).
+  --mode <auto|text|json|js>    Optional, default: auto.
+  --verbose <0|1|2>             Optional, 0: silent, 1: default, 2: verbose.
 ```
 
 # API
