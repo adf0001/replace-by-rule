@@ -58,45 +58,71 @@ if (!ruleFile) {
   process.exit(0);
 }
 
-// input file
-let inputText = null;
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    let input = "";
 
-if (inputFile) {
-  // load input file
-  inputFile = path.resolve(inputFile);
-  if (verbose > 0) {
-    console.log(`Loading input file: ${inputFile}`);
+    process.stdin.on("readable", () => {
+      let chunk;
+      while ((chunk = process.stdin.read()) !== null) {
+        input += chunk;
+      }
+    });
+
+    process.stdin.on("end", () => {
+      resolve(input.trim());
+    });
+
+    process.stdin.on("error", (err) => {
+      reject(err);
+    });
+  });
+}
+
+async function mainProcess() {
+  // input file
+  let inputText = null;
+
+  if (inputFile) {
+    // load input file
+    inputFile = path.resolve(inputFile);
+    if (verbose > 0) {
+      console.log(`Loading input file: ${inputFile}`);
+    }
+    inputText = fs.readFileSync(inputFile, "utf8");
+  } else if (!process.stdin.isTTY) {
+    // read input from pipe/redirection
+    // inputText = fs.readFileSync(0, "utf8");  // cause EOF error in windows
+    inputText = await readStdin();
+  } else {
+    console.log(help);
+    process.exit(0);
   }
-  inputText = fs.readFileSync(inputFile, "utf8");
-} else if (!process.stdin.isTTY) {
-  // read input from pipe/redirection
-  inputText = fs.readFileSync(0, "utf8");
-} else {
-  console.log(help);
-  process.exit(0);
-}
 
-// load rule file
-ruleFile = path.resolve(ruleFile);
-if (verbose > 0) {
-  console.log(`Loading rule file: ${ruleFile}`);
-}
-let rule = ruleFromFile(ruleFile, mode);
-
-// replace by rule
-let outputText = replaceByRule(inputText, rule, verbose);
-
-// write output file
-if (outputFile) {
-  outputFile = path.resolve(outputFile);
-  let dir = path.dirname(outputFile);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-
+  // load rule file
+  ruleFile = path.resolve(ruleFile);
   if (verbose > 0) {
-    console.log(`Writing output file: ${outputFile}`);
+    console.log(`Loading rule file: ${ruleFile}`);
   }
-  fs.writeFileSync(outputFile, outputText, "utf8");
-} else {
-  // console.log(outputText);
-  process.stdout.write(outputText);
+  let rule = ruleFromFile(ruleFile, mode);
+
+  // replace by rule
+  let outputText = replaceByRule(inputText, rule, verbose);
+
+  // write output file
+  if (outputFile) {
+    outputFile = path.resolve(outputFile);
+    let dir = path.dirname(outputFile);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+    if (verbose > 0) {
+      console.log(`Writing output file: ${outputFile}`);
+    }
+    fs.writeFileSync(outputFile, outputText, "utf8");
+  } else {
+    console.log(outputText);
+    // process.stdout.write(outputText);
+  }
 }
+
+mainProcess();

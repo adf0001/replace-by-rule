@@ -6,7 +6,7 @@ npm i -g replace-by-rule
 
 # CLI tool
 ```text
-replace-by-rule v0.0.4
+replace-by-rule v0.0.5
 
 replace text by rule
 

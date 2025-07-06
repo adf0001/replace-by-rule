@@ -1,6 +1,6 @@
 {
   "name": "replace-by-rule",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "replace text by rule",
   "main": "index.js",
   "scripts": {
